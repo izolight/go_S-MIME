@@ -5,7 +5,6 @@ import (
 	"encoding/asn1"
 	"log"
 
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
@@ -135,7 +134,7 @@ func (ci ContentInfo) AuthEnvelopedDataContent() (*AuthEnvelopedData, error) {
 	}
 
 	ed := new(AuthEnvelopedData)
-	if rest, err := asn.Unmarshal(ci.Content.Bytes, ed); err != nil {
+	if rest, err := asn1.Unmarshal(ci.Content.Bytes, ed); err != nil {
 		return nil, err
 	} else if len(rest) > 0 {
 		return nil, ErrTrailingData

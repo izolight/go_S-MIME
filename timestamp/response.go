@@ -1,7 +1,7 @@
 package timestamp
 
 import (
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
+	"encoding/asn1"
 	cms "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
 )
 
@@ -17,7 +17,7 @@ type TimeStampResp struct {
 func ParseResponse(der []byte) (TimeStampResp, error) {
 	var resp TimeStampResp
 
-	rest, err := asn.Unmarshal(der, &resp)
+	rest, err := asn1.Unmarshal(der, &resp)
 	if err != nil {
 		return resp, err
 	}

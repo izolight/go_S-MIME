@@ -17,7 +17,6 @@ import (
 	"net/http"
 	"time"
 
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
@@ -28,7 +27,7 @@ func (ci ContentInfo) SignedDataContent() (*SignedData, error) {
 	}
 
 	sd := new(SignedData)
-	if rest, err := asn.Unmarshal(ci.Content.Bytes, sd); err != nil {
+	if rest, err := asn1.Unmarshal(ci.Content.Bytes, sd); err != nil {
 		return nil, err
 	} else if len(rest) > 0 {
 		return nil, ErrTrailingData
@@ -187,7 +186,7 @@ func (sd *SignedData) AddSignerInfo(keypPair tls.Certificate, attrs []Attribute)
 	si.SignedAttrs = append(si.SignedAttrs, mdAttr, ctAttr, sTAttr)
 	si.SignedAttrs = append(si.SignedAttrs, attrs...)
 
-	sm, err := asn.MarshalWithParams(si.SignedAttrs, `set`)
+	sm, err := asn1.MarshalWithParams(si.SignedAttrs, `set`)
 	if err != nil {
 		return err
 	}
@@ -236,7 +235,7 @@ func (sd *SignedData) AddCertificate(cert []byte) error {
 	}
 
 	var rv asn1.RawValue
-	if _, err := asn.Unmarshal(cert, &rv); err != nil {
+	if _, err := asn1.Unmarshal(cert, &rv); err != nil {
 		return err
 	}
 
@@ -293,7 +292,7 @@ func (sd *SignedData) X509Certificates() (map[string]*x509.Certificate, error) {
 func (sd *SignedData) ContentInfo() (ContentInfo, error) {
 	var nilCI ContentInfo
 
-	der, err := asn.Marshal(*sd)
+	der, err := asn1.Marshal(*sd)
 	if err != nil {
 		return nilCI, err
 	}
@@ -386,7 +385,7 @@ func (sd *SignedData) Verify(Opts x509.VerifyOptions, detached []byte) (chains [
 				return
 			}
 
-			signedMessage, err = asn.MarshalWithParams(signer.SignedAttrs, `set`)
+			signedMessage, err = asn1.MarshalWithParams(signer.SignedAttrs, `set`)
 			if err != nil {
 				return
 			}

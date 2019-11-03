@@ -6,7 +6,6 @@ import (
 	"math/big"
 	"time"
 
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	cms "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
 	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
@@ -48,7 +47,7 @@ func ParseInfo(enci cms.EncapsulatedContentInfo) (TSTInfo, error) {
 		return i, cms.ErrWrongType
 	}
 
-	if rest, err := asn.Unmarshal(enci.EContent, &i); err != nil {
+	if rest, err := asn1.Unmarshal(enci.EContent, &i); err != nil {
 		return i, err
 	} else if len(rest) > 0 {
 		return i, cms.ErrTrailingData

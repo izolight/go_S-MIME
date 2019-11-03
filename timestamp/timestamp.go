@@ -4,9 +4,9 @@ package timestamp
 import (
 	"crypto"
 	"crypto/x509"
+	"encoding/asn1"
 	"time"
 
-	asn1 "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	cms "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
 	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )

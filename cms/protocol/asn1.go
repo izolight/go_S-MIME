@@ -2,8 +2,6 @@ package protocol
 
 import (
 	"encoding/asn1"
-
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 )
 
 // RawValue marshals val and returns the asn1.RawValue
@@ -14,11 +12,11 @@ func RawValue(val interface{}, params ...string) (rv asn1.RawValue, err error) {
 	}
 
 	var der []byte
-	if der, err = asn.MarshalWithParams(val, param); err != nil {
+	if der, err = asn1.MarshalWithParams(val, param); err != nil {
 		return
 	}
 
-	if _, err = asn.Unmarshal(der, &rv); err != nil {
+	if _, err = asn1.Unmarshal(der, &rv); err != nil {
 		return
 	}
 	return

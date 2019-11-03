@@ -5,7 +5,6 @@ import (
 	"encoding/asn1"
 	"log"
 
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
@@ -73,7 +72,7 @@ func (ci ContentInfo) EnvelopedDataContent() (*EnvelopedData, error) {
 
 	//var Ed interface{}
 	ed := new(EnvelopedData)
-	if rest, err := asn.Unmarshal(ci.Content.Bytes, ed); err != nil {
+	if rest, err := asn1.Unmarshal(ci.Content.Bytes, ed); err != nil {
 		return nil, err
 	} else if len(rest) > 0 {
 		return nil, ErrTrailingData
@@ -86,7 +85,7 @@ func (ci ContentInfo) EnvelopedDataContent() (*EnvelopedData, error) {
 func (ed EnvelopedData) ContentInfo() (ContentInfo, error) {
 	nilCI := *new(ContentInfo)
 
-	der, err := asn.Marshal(ed)
+	der, err := asn1.Marshal(ed)
 	if err != nil {
 		log.Fatal(err)
 	}

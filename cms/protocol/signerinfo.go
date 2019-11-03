@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"time"
 
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
@@ -149,7 +148,7 @@ func (si SignerInfo) GetSigningTimeAttribute() (time.Time, error) {
 		return t, ASN1Error{"bad class or tag"}
 	}
 
-	if rest, err := asn.Unmarshal(rv.FullBytes, &t); err != nil {
+	if rest, err := asn1.Unmarshal(rv.FullBytes, &t); err != nil {
 		return t, err
 	} else if len(rest) > 0 {
 		return t, ErrTrailingData

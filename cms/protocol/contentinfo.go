@@ -7,7 +7,6 @@ import (
 	"encoding/asn1"
 	"fmt"
 
-	asn "github.com/InfiniteLoopSpace/go_S-MIME/asn1"
 	"github.com/InfiniteLoopSpace/go_S-MIME/b64"
 )
 
@@ -29,7 +28,7 @@ func ParseContentInfo(der []byte) (ci ContentInfo, err error) {
 	}
 
 	var rest []byte
-	if rest, err = asn.Unmarshal(der, &ci); err != nil {
+	if rest, err = asn1.Unmarshal(der, &ci); err != nil {
 		return
 	}
 	if len(rest) > 0 {
@@ -42,7 +41,7 @@ func ParseContentInfo(der []byte) (ci ContentInfo, err error) {
 
 // DER returns the DER-encoded ASN.1 data.
 func (ci ContentInfo) DER() ([]byte, error) {
-	return asn.Marshal(ci)
+	return asn1.Marshal(ci)
 }
 
 // Base64 encodes the DER-encoded ASN.1 data in base64 for use in S/MIME.
