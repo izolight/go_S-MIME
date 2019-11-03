@@ -13,7 +13,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 
 	"github.com/InfiniteLoopSpace/go_S-MIME/b64"
 
@@ -39,8 +39,8 @@ func (smime *SMIME) addSMIMECapabilitesAttr() (err error) {
 
 	var smimeCapabilities []pkix.AlgorithmIdentifier
 
-	smimeCapabilities = append(smimeCapabilities, pkix.AlgorithmIdentifier{Algorithm: oid.EncryptionAlgorithmAES128CBC})
-	smimeCapabilities = append(smimeCapabilities, pkix.AlgorithmIdentifier{Algorithm: oid.AEADChaCha20Poly1305})
+	smimeCapabilities = append(smimeCapabilities, pkix.AlgorithmIdentifier{Algorithm: oid_add.EncryptionAlgorithmAES128CBC})
+	smimeCapabilities = append(smimeCapabilities, pkix.AlgorithmIdentifier{Algorithm: oid_add.AEADChaCha20Poly1305})
 
 	err = smime.CMS.AddAttribute(oidsmimeCapabilities, smimeCapabilities)
 

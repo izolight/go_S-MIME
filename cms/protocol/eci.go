@@ -4,7 +4,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 //EncryptedContentInfo ::= SEQUENCE {
@@ -21,7 +21,7 @@ type EncryptedContentInfo struct {
 // the EncryptedContentInfo, the key and the MAC.
 func NewEncryptedContentInfo(contentType asn1.ObjectIdentifier, contentEncryptionAlg asn1.ObjectIdentifier, content []byte) (eci EncryptedContentInfo, key, mac []byte, err error) {
 
-	encAlg := &oid.EncryptionAlgorithm{
+	encAlg := &oid_add.EncryptionAlgorithm{
 		EncryptionAlgorithmIdentifier: contentEncryptionAlg,
 	}
 

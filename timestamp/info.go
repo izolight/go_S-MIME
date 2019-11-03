@@ -7,7 +7,7 @@ import (
 	"time"
 
 	cms "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 // TSTInfo ::= SEQUENCE  {
@@ -43,7 +43,7 @@ type TSTInfo struct {
 // ParseInfo parses an Info out of a CMS EncapsulatedContentInfo.
 func ParseInfo(enci cms.EncapsulatedContentInfo) (TSTInfo, error) {
 	i := TSTInfo{}
-	if !enci.EContentType.Equal(oid.TSTInfo) {
+	if !enci.EContentType.Equal(oid_add.TSTInfo) {
 		return i, cms.ErrWrongType
 	}
 

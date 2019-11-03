@@ -8,7 +8,7 @@ import (
 	"time"
 
 	cms "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 const (
@@ -55,7 +55,7 @@ func FetchTSToken(url string, msg []byte, hash crypto.Hash) (tsToken cms.Content
 
 // VerfiyTS verfies the given TSToken and returns the TSTInfo.
 func VerfiyTS(ci cms.ContentInfo) (info TSTInfo, err error) {
-	if !ci.ContentType.Equal(oid.SignedData) {
+	if !ci.ContentType.Equal(oid_add.SignedData) {
 		err = cms.ErrUnsupported
 		return
 	}

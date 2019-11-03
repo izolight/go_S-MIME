@@ -8,7 +8,8 @@ import (
 	"encoding/asn1"
 	"errors"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	"github.com/mastahyeti/cms/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 type pssParameters struct {
@@ -35,7 +36,7 @@ func newpssParameters(hash ...crypto.Hash) (param pssParameters, err error) {
 		param.TrailerField = 1
 	} else {
 		var ok bool
-		h, ok = oid.HashToDigestAlgorithm[hash[0]]
+		h, ok = oid_add.HashToDigestAlgorithm[hash[0]]
 		if !ok {
 			err = errors.New("Unsupported hashfunction")
 		}
@@ -71,7 +72,7 @@ func verfiyRSAPSS(cert x509.Certificate, signatureAlgorithm pkix.AlgorithmIdenti
 		return
 	}
 
-	hash := oid.DigestAlgorithmToHash[param.Hash.Algorithm.String()]
+	hash := oid_add.DigestAlgorithmToHash[param.Hash.Algorithm.String()]
 
 	pssOpts := rsa.PSSOptions{SaltLength: param.SaltLength, Hash: hash}
 
@@ -99,7 +100,7 @@ func newPSS(hash crypto.Hash, pub *rsa.PublicKey) (signatureAlgorithm pkix.Algor
 	if err != nil {
 		return
 	}
-	signatureAlgorithm = pkix.AlgorithmIdentifier{Algorithm: oid.SignatureAlgorithmRSASSAPSS, Parameters: paramRV}
+	signatureAlgorithm = pkix.AlgorithmIdentifier{Algorithm: oid_add.SignatureAlgorithmRSASSAPSS, Parameters: paramRV}
 	return
 }
 
@@ -131,7 +132,7 @@ func newRSAESOAEPparams(hash ...crypto.Hash) (param RSAESOAEPparams, err error) 
 		h = oid.DigestAlgorithmSHA1
 	} else {
 		var ok bool
-		h, ok = oid.HashToDigestAlgorithm[hash[0]]
+		h, ok = oid_add.HashToDigestAlgorithm[hash[0]]
 		if !ok {
 			err = errors.New("Unsupported hashfunction")
 		}
@@ -158,7 +159,7 @@ func parseRSAESOAEPparams(param []byte) (opts *rsa.OAEPOptions, err error) {
 		return
 	}
 
-	opts = &rsa.OAEPOptions{Hash: oid.DigestAlgorithmToHash[oaepOpts.HashFunc.Algorithm.String()], Label: []byte{}}
+	opts = &rsa.OAEPOptions{Hash: oid_add.DigestAlgorithmToHash[oaepOpts.HashFunc.Algorithm.String()], Label: []byte{}}
 
 	if !oaepOpts.MaskGenFunc.Algorithm.Equal(oidMGF1) {
 		err = errors.New("Unsupported mask generation funktion" + oaepOpts.MaskGenFunc.Algorithm.String())

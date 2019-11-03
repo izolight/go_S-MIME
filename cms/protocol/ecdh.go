@@ -13,7 +13,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 var errUnsupported = errors.New("Unsupported hash function")
@@ -57,15 +57,15 @@ func ANSIx963KDF(sharedSecret, sharedInfo []byte, keyLen int, hash crypto.Hash) 
 
 func encryptKeyECDH(key []byte, recipient *x509.Certificate) (kari KeyAgreeRecipientInfo, err error) {
 
-	keyWrapAlgorithm := oid.KeyWrap{KeyWrapAlgorithm: oid.AES128Wrap}
-	keyEncryptionAlgorithm := oid.DHSinglePassstdDHsha256kdfscheme
-	hash := oid.KDFHashAlgorithm[keyEncryptionAlgorithm.String()]
+	keyWrapAlgorithm := oid_add.KeyWrap{KeyWrapAlgorithm: oid_add.AES128Wrap}
+	keyEncryptionAlgorithm := oid_add.DHSinglePassstdDHsha256kdfscheme
+	hash := oid_add.KDFHashAlgorithm[keyEncryptionAlgorithm.String()]
 
 	kari.UKM = make([]byte, 8)
 	rand.Read(kari.UKM)
 
 	kari.Version = 3
-	kari.Originator.OriginatorKey.Algorithm = pkix.AlgorithmIdentifier{Algorithm: oid.ECPublicKey}
+	kari.Originator.OriginatorKey.Algorithm = pkix.AlgorithmIdentifier{Algorithm: oid_add.ECPublicKey}
 
 	// check recipient key
 
@@ -148,7 +148,7 @@ func (kari *KeyAgreeRecipientInfo) decryptKey(keyPair tls.Certificate) (key []by
 		return
 	}
 
-	if !kari.Originator.OriginatorKey.Algorithm.Algorithm.Equal(oid.ECPublicKey) {
+	if !kari.Originator.OriginatorKey.Algorithm.Algorithm.Equal(oid_add.ECPublicKey) {
 		err = errors.New("Orginator key algorithm not supported")
 		return
 	}
@@ -171,7 +171,7 @@ func (kari *KeyAgreeRecipientInfo) decryptKey(keyPair tls.Certificate) (key []by
 
 	sharedSecret := ECDHsharedSecret(pubKey.Curve, paddedPrivateKey, x, y)
 
-	hash, ok := oid.KDFHashAlgorithm[kari.KeyEncryptionAlgorithm.Algorithm.String()]
+	hash, ok := oid_add.KDFHashAlgorithm[kari.KeyEncryptionAlgorithm.Algorithm.String()]
 	if !ok {
 		err = errors.New("Unsupported key derivation hash algorithm")
 		return
@@ -179,7 +179,7 @@ func (kari *KeyAgreeRecipientInfo) decryptKey(keyPair tls.Certificate) (key []by
 
 	var keyWrapAlgorithmIdentifier pkix.AlgorithmIdentifier
 	asn1.Unmarshal(kari.KeyEncryptionAlgorithm.Parameters.FullBytes, &keyWrapAlgorithmIdentifier)
-	keyWrapAlgorithm := oid.KeyWrap{KeyWrapAlgorithm: keyWrapAlgorithmIdentifier.Algorithm}
+	keyWrapAlgorithm := oid_add.KeyWrap{KeyWrapAlgorithm: keyWrapAlgorithmIdentifier.Algorithm}
 
 	//
 

@@ -13,7 +13,7 @@ import (
 	"math/big"
 
 	cms "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 // TimeStampReq ::= SEQUENCE  {
@@ -103,7 +103,7 @@ type MessageImprint struct {
 
 // NewMessageImprint creates a new MessageImprint, digesting msg using the specified hash.
 func NewMessageImprint(hash crypto.Hash, msg []byte) (MessageImprint, error) {
-	digestAlgorithm := oid.HashToDigestAlgorithm[hash]
+	digestAlgorithm := oid_add.HashToDigestAlgorithm[hash]
 	if len(digestAlgorithm) == 0 {
 		return MessageImprint{}, cms.ErrUnsupported
 	}

@@ -5,7 +5,7 @@ import (
 	"encoding/asn1"
 	"log"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 //AuthEnvelopedData ::= SEQUENCE {
@@ -44,7 +44,7 @@ func (ed *AuthEnvelopedData) Decrypt(keyPair []tls.Certificate) (plain []byte, e
 		}
 	}
 
-	encAlg := &oid.EncryptionAlgorithm{
+	encAlg := &oid_add.EncryptionAlgorithm{
 		Key:                                  key,
 		ContentEncryptionAlgorithmIdentifier: ed.AECI.ContentEncryptionAlgorithm,
 	}
@@ -83,13 +83,13 @@ func NewAuthEnvelopedData(eci *EncryptedContentInfo, reciInfos []RecipientInfo, 
 
 func authcontentInfo(ed AuthEnvelopedData) (ci ContentInfo, err error) {
 
-	der, err := asn.Marshal(ed)
+	der, err := asn1.Marshal(ed)
 	if err != nil {
 		return
 	}
 
 	ci = ContentInfo{
-		ContentType: oid.AuthEnvelopedData,
+		ContentType: oid_add.AuthEnvelopedData,
 		Content: asn1.RawValue{
 			Class:      asn1.ClassContextSpecific,
 			Tag:        0,
@@ -105,7 +105,7 @@ func authcontentInfo(ed AuthEnvelopedData) (ci ContentInfo, err error) {
 func (ed AuthEnvelopedData) ContentInfo() (ContentInfo, error) {
 	nilCI := *new(ContentInfo)
 
-	der, err := asn.Marshal(ed)
+	der, err := asn1.Marshal(ed)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -115,7 +115,7 @@ func (ed AuthEnvelopedData) ContentInfo() (ContentInfo, error) {
 	}
 
 	return ContentInfo{
-		ContentType: oid.AuthEnvelopedData,
+		ContentType: oid_add.AuthEnvelopedData,
 		Content: asn1.RawValue{
 			Class:      asn1.ClassContextSpecific,
 			Tag:        0,
@@ -129,7 +129,7 @@ func (ed AuthEnvelopedData) ContentInfo() (ContentInfo, error) {
 // AuthEnvelopedDataContent unmarshals ContentInfo and returns AuthEnvelopedData if
 // content type is AuthEnvelopedData.
 func (ci ContentInfo) AuthEnvelopedDataContent() (*AuthEnvelopedData, error) {
-	if !ci.ContentType.Equal(oid.AuthEnvelopedData) {
+	if !ci.ContentType.Equal(oid_add.AuthEnvelopedData) {
 		return nil, ErrWrongType
 	}
 

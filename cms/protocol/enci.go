@@ -3,7 +3,7 @@ package protocol
 import (
 	"encoding/asn1"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 // EncapsulatedContentInfo ::= SEQUENCE {
@@ -17,7 +17,7 @@ type EncapsulatedContentInfo struct {
 // NewDataEncapsulatedContentInfo creates a new EncapsulatedContentInfo of type
 // id-data.
 func NewDataEncapsulatedContentInfo(data []byte) (EncapsulatedContentInfo, error) {
-	return NewEncapsulatedContentInfo(oid.Data, data)
+	return NewEncapsulatedContentInfo(oid_add.Data, data)
 }
 
 // NewEncapsulatedContentInfo creates a new EncapsulatedContentInfo.
@@ -30,5 +30,5 @@ func NewEncapsulatedContentInfo(contentType asn1.ObjectIdentifier, content []byt
 
 // IsTypeData checks if the EContentType is id-data.
 func (eci EncapsulatedContentInfo) IsTypeData() bool {
-	return eci.EContentType.Equal(oid.Data)
+	return eci.EContentType.Equal(oid_add.Data)
 }

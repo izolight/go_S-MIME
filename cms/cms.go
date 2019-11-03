@@ -10,7 +10,8 @@ import (
 	"time"
 
 	protocol "github.com/InfiniteLoopSpace/go_S-MIME/cms/protocol"
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	"github.com/mastahyeti/cms/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 	timestamp "github.com/InfiniteLoopSpace/go_S-MIME/timestamp"
 )
 
@@ -39,7 +40,7 @@ func New(cert ...tls.Certificate) (cms *CMS, err error) {
 			CurrentTime:   time.Now(),
 			KeyUsages:     []x509.ExtKeyUsage{x509.ExtKeyUsageAny},
 		},
-		ContentEncryptionAlgorithm: oid.EncryptionAlgorithmAES128CBC,
+		ContentEncryptionAlgorithm: oid_add.EncryptionAlgorithmAES128CBC,
 		TimeStampServer:            "http://timestamp.digicert.com",
 		TimeStamp:                  false,
 	}
@@ -71,7 +72,7 @@ func (cms *CMS) AddAttribute(attrType asn1.ObjectIdentifier, val interface{}) (e
 // Encrypt encrypts data for the recipients and returns DER-encoded ASN.1 ContentInfo.
 func (cms *CMS) Encrypt(data []byte, recipients []*x509.Certificate) (der []byte, err error) {
 
-	eci, key, _, err := protocol.NewEncryptedContentInfo(oid.Data, cms.ContentEncryptionAlgorithm, data)
+	eci, key, _, err := protocol.NewEncryptedContentInfo(oid_add.Data, cms.ContentEncryptionAlgorithm, data)
 	if err != nil {
 		return
 	}
@@ -100,7 +101,7 @@ func (cms *CMS) Encrypt(data []byte, recipients []*x509.Certificate) (der []byte
 // AuthEncrypt AEAD-encrypts data for the recipients and returns DER-encoded ASN.1 ContentInfo.
 func (cms *CMS) AuthEncrypt(data []byte, recipients []*x509.Certificate) (der []byte, err error) {
 
-	eci, key, mac, err := protocol.NewEncryptedContentInfo(oid.Data, oid.EncryptionAlgorithmAES128GCM, data)
+	eci, key, mac, err := protocol.NewEncryptedContentInfo(oid_add.Data, oid_add.EncryptionAlgorithmAES128GCM, data)
 	if err != nil {
 		return
 	}

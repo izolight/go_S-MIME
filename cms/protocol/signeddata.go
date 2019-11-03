@@ -17,12 +17,13 @@ import (
 	"net/http"
 	"time"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	"github.com/mastahyeti/cms/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 // SignedDataContent returns SignedData if ContentType is SignedData.
 func (ci ContentInfo) SignedDataContent() (*SignedData, error) {
-	if !ci.ContentType.Equal(oid.SignedData) {
+	if !ci.ContentType.Equal(oid_add.SignedData) {
 		return nil, ErrWrongType
 	}
 
@@ -127,9 +128,9 @@ func (sd *SignedData) AddSignerInfo(keypPair tls.Certificate, attrs []Attribute)
 
 	var signerOpts crypto.SignerOpts
 	digestAlgorithm := digestAlgorithmForPublicKey(cert.PublicKey)
-	signatureAlgorithm, ok := oid.PublicKeyAlgorithmToSignatureAlgorithm[keypPair.Leaf.PublicKeyAlgorithm]
+	signatureAlgorithm, ok := oid_add.PublicKeyAlgorithmToSignatureAlgorithm[keypPair.Leaf.PublicKeyAlgorithm]
 	if isRSAPSS(cert) {
-		h := oid.DigestAlgorithmToHash[digestAlgorithm.Algorithm.String()]
+		h := oid_add.DigestAlgorithmToHash[digestAlgorithm.Algorithm.String()]
 		signatureAlgorithm, signerOpts, err = newPSS(h, cert.PublicKey.(*rsa.PublicKey))
 	}
 	if !ok {
@@ -298,7 +299,7 @@ func (sd *SignedData) ContentInfo() (ContentInfo, error) {
 	}
 
 	return ContentInfo{
-		ContentType: oid.SignedData,
+		ContentType: oid_add.SignedData,
 		Content: asn1.RawValue{
 			Class:      asn1.ClassContextSpecific,
 			Tag:        0,
@@ -396,7 +397,7 @@ func (sd *SignedData) Verify(Opts x509.VerifyOptions, detached []byte) (chains [
 			return
 		}
 		switch signer.SignatureAlgorithm.Algorithm.String() {
-		case oid.SignatureAlgorithmRSASSAPSS.String():
+		case oid_add.SignatureAlgorithmRSASSAPSS.String():
 		default:
 			err = cert.CheckSignature(sigAlg, signedMessage, signer.Signature)
 		}

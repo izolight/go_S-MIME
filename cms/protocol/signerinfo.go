@@ -9,7 +9,8 @@ import (
 	"fmt"
 	"time"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	"github.com/mastahyeti/cms/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 // SignerInfo ::= SEQUENCE {
@@ -55,7 +56,7 @@ func (si SignerInfo) FindCertificate(certs []*x509.Certificate) (*x509.Certifica
 
 		for _, cert := range certs {
 			for _, ext := range cert.Extensions {
-				if oid.SubjectKeyIdentifier.Equal(ext.Id) {
+				if oid_add.SubjectKeyIdentifier.Equal(ext.Id) {
 					if bytes.Equal(ski, ext.Value) {
 						return cert, nil
 					}
@@ -73,7 +74,7 @@ func (si SignerInfo) FindCertificate(certs []*x509.Certificate) (*x509.Certifica
 // 0 is returned for unrecognized algorithms.
 func (si SignerInfo) Hash() (crypto.Hash, error) {
 	algo := si.DigestAlgorithm.Algorithm.String()
-	hash := oid.DigestAlgorithmToHash[algo]
+	hash := oid_add.DigestAlgorithmToHash[algo]
 	if hash == 0 || !hash.Available() {
 		return 0, ErrUnsupported
 	}
@@ -88,7 +89,7 @@ func (si SignerInfo) X509SignatureAlgorithm() (sigAlg x509.SignatureAlgorithm, e
 		sigOID    = si.SignatureAlgorithm.Algorithm.String()
 		digestOID = si.DigestAlgorithm.Algorithm.String()
 	)
-	sigAlg, ok := oid.SignatureAlgorithms[sigOID][digestOID]
+	sigAlg, ok := oid_add.SignatureAlgorithms[sigOID][digestOID]
 
 	if !ok {
 		err = fmt.Errorf("Signature algorithm with OID %s in combination with digest with OID %s not supported", sigOID, digestOID)
@@ -108,7 +109,7 @@ func (si SignerInfo) GetContentTypeAttribute() (asn1.ObjectIdentifier, error) {
 	}
 
 	var ct asn1.ObjectIdentifier
-	if rest, err := asn.Unmarshal(rv.FullBytes, &ct); err != nil {
+	if rest, err := asn1.Unmarshal(rv.FullBytes, &ct); err != nil {
 		return nil, err
 	} else if len(rest) > 0 {
 		return nil, ErrTrailingData

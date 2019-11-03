@@ -13,7 +13,7 @@ import (
 	"log"
 	"time"
 
-	oid "github.com/InfiniteLoopSpace/go_S-MIME/oid"
+	oid_add "github.com/InfiniteLoopSpace/go_S-MIME/oid"
 )
 
 //RecipientInfo ::= CHOICE {
@@ -63,14 +63,14 @@ func (ktri *KeyTransRecipientInfo) decryptKey(keyPair tls.Certificate) (key []by
 
 	ski := keyPair.Leaf.SubjectKeyId
 
-	certPubAlg := oid.PublicKeyAlgorithmToEncrytionAlgorithm[keyPair.Leaf.PublicKeyAlgorithm].Algorithm
+	certPubAlg := oid_add.PublicKeyAlgorithmToEncrytionAlgorithm[keyPair.Leaf.PublicKeyAlgorithm].Algorithm
 
 	var decOpts crypto.DecrypterOpts
 	pkcs15CertwithOAEP := false
 
-	if ktri.KeyEncryptionAlgorithm.Algorithm.Equal(oid.EncryptionAlgorithmRSAESOAEP) {
+	if ktri.KeyEncryptionAlgorithm.Algorithm.Equal(oid_add.EncryptionAlgorithmRSAESOAEP) {
 
-		if certPubAlg.Equal(oid.EncryptionAlgorithmRSA) {
+		if certPubAlg.Equal(oid_add.EncryptionAlgorithmRSA) {
 			pkcs15CertwithOAEP = true
 		}
 
@@ -173,13 +173,13 @@ func encryptKeyRSA(key []byte, recipient *x509.Certificate) (ktri KeyTransRecipi
 			if err != nil {
 				return
 			}
-			ktri.KeyEncryptionAlgorithm = pkix.AlgorithmIdentifier{Algorithm: oid.EncryptionAlgorithmRSAESOAEP, Parameters: oaepparamRV}
+			ktri.KeyEncryptionAlgorithm = pkix.AlgorithmIdentifier{Algorithm: oid_add.EncryptionAlgorithmRSAESOAEP, Parameters: oaepparamRV}
 			h := hash.New()
 			ktri.EncryptedKey, err = rsa.EncryptOAEP(h, rand.Reader, pub, key, nil)
 			return
 		}
 
-		ktri.KeyEncryptionAlgorithm = pkix.AlgorithmIdentifier{Algorithm: oid.EncryptionAlgorithmRSA}
+		ktri.KeyEncryptionAlgorithm = pkix.AlgorithmIdentifier{Algorithm: oid_add.EncryptionAlgorithmRSA}
 		ktri.EncryptedKey, err = rsa.EncryptPKCS1v15(rand.Reader, pub, key)
 		return
 	}
